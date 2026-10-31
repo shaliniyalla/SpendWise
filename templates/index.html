@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SpendWise – Know where your money goes</title><link rel="stylesheet" href="/static/css/style.css"></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="logo" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#0f4c45"/><path d="M10 33l9-9 6 5 12-13" fill="none" stroke="#f3f4ef" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 16h8v8" fill="none" stroke="#e0b455" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></symbol></svg>
+
+<div id="splash"><svg class="logo xl"><use href="#logo"/></svg><h1>SpendWise</h1><p>Say what you spent. We'll file it.</p></div>
+
+<section id="auth" hidden>
+<header class="lp-nav"><div class="brand"><svg class="logo"><use href="#logo"/></svg>SpendWise</div>
+<nav><a href="#how">How it works</a><a href="#cats">Categories</a></nav>
+<div class="lp-act"><button class="link" data-open="login">Log in</button><button class="btn" data-open="register">Get started</button></div></header>
+<div class="lp-hero"><div class="lp-copy"><h1>Say what you spent.<br>We'll file it.</h1>
+<p>Write expenses the way you would text a friend. SpendWise puts each one in the right category and shows you where your month is going.</p>
+<div class="lp-cta"><button class="btn lg" data-open="register">Start tracking</button><button class="link" data-open="login">I already have an account</button></div></div>
+<div class="receipt" aria-label="Example of an expense being sorted"><div class="rc-head"><span>NEW EXPENSE</span><span>today</span></div>
+<div class="rc-line"><span>what</span><b id="rc-what"></b><u class="caret"></u></div><div class="rc-line"><span>amount</span><b>₹ <em id="rc-amt"></em></b></div>
+<div class="rc-foot"><span>filed under</span><div class="stamp" id="rc-stamp"></div></div></div></div>
+<section class="lp-sec" id="how"><h2>Three steps, no spreadsheets</h2><div class="steps">
+<div><b>1</b><h3>Write it down</h3><p>Type what you bought and the amount. No forms, no hunting through menus.</p></div>
+<div><b>2</b><h3>We sort it</h3><p>SpendWise suggests a category. If it is off, change it before you save.</p></div>
+<div><b>3</b><h3>See the picture</h3><p>Charts and a monthly budget show where your money goes.</p></div></div></section>
+<section class="lp-sec" id="cats"><h2>Six categories cover everyday spending</h2><div class="catgrid" id="lp-cats"></div></section>
+<footer class="lp-foot"><div class="brand"><svg class="logo"><use href="#logo"/></svg>SpendWise</div><p>Your expenses stay in your own private account.</p></footer>
+<dialog id="auth-dlg"><button class="x" id="a-close" aria-label="Close">×</button><div class="auth-card"><h2 id="a-title">Welcome back</h2><p class="muted" id="a-sub">Log in to see your spending.</p>
+<div class="tabs"><button class="on" data-auth="login">Log in</button><button data-auth="register">Create account</button></div>
+<div id="a-name-w" hidden><label>Your name<input id="a-name" autocomplete="name" placeholder="Your name"></label></div>
+<label>Email<input id="a-email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+<label>Password<input id="a-pass" type="password" autocomplete="current-password" placeholder="At least 6 characters"></label>
+<label class="chk"><input type="checkbox" onchange="document.getElementById('a-pass').type=this.checked?'text':'password'">Show password</label>
+<p id="a-err" class="error" role="alert"></p><button class="btn wide" id="a-go">Log in</button></div></dialog></section>
+
+<div id="app" hidden>
+<header class="topbar"><div class="tb-in"><div class="brand"><svg class="logo"><use href="#logo"/></svg>SpendWise</div>
+<nav id="nav"><button data-page="overview" class="on">Home</button><button data-page="add">Add expense</button><button data-page="transactions">Transactions</button><button data-page="analysis">Insights</button><button data-page="profile">Profile</button><button data-page="help">Help</button></nav>
+<button class="avatar" id="top-av" aria-label="Open profile"></button></div></header>
+<main>
+<section id="p-overview" class="page"><header class="top"><div><h2 id="welcome"></h2><p class="muted">Here is your money at a glance.</p></div><button class="btn" data-go="add">+ Add expense</button></header>
+<div class="hero-card"><div><span>Spent this month</span><b id="ov-month">₹0</b><div class="budget" id="ov-budget"></div></div><div class="hc-art" aria-hidden="true">₹</div></div>
+<div class="stats" id="ov-stats"></div>
+<div class="grid2"><div class="card"><h3>Where it went</h3><div id="ov-cats"></div></div><div class="card"><h3>Last 6 months</h3><div class="chartbox sm"><canvas id="mchart"></canvas></div></div></div>
+<div class="card"><h3>Recent expenses</h3><div id="ov-recent"></div></div></section>
+
+<section id="p-add" class="page" hidden><h2>Add an expense</h2><p class="muted">Write it the way you would tell a friend. We will pick the category.</p>
+<div class="grid2"><div class="card"><label>What did you spend on?<input id="f-desc" maxlength="200" placeholder="e.g. auto from college to home"></label>
+<div class="chips" id="chips"></div>
+<label>Amount (₹)<input id="f-amt" type="number" min="0.01" step="0.01" placeholder="130"></label>
+<p id="f-err" class="error" role="alert"></p><button class="btn wide" id="f-pred">Find category</button></div>
+<div class="card" id="pred-card"><h3>Category</h3><div class="empty" id="pred-empty"><p class="muted">Your category will show up here.</p></div>
+<div id="pred-body" hidden><div class="pred-main"><span id="pd-icon" class="big"></span><div><b id="pd-cat" class="catname"></b><div class="muted">Confidence <span id="pd-conf"></span></div></div></div>
+<div class="bar"><i id="pd-bar"></i></div><p class="muted" id="pd-why"></p><div id="pd-top"></div>
+<label>Not right? Change it<select id="pd-sel"></select></label>
+<p class="note">Confidence is an estimate, not a guarantee.</p><button class="btn wide" id="f-save">Save expense</button></div></div></div></section>
+
+<section id="p-transactions" class="page" hidden><h2>Transactions</h2><div class="card">
+<div class="filters"><input id="t-q" placeholder="Search expenses"><select id="t-cat"></select><select id="t-sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="hi">Highest amount</option><option value="lo">Lowest amount</option></select></div>
+<div class="tablewrap"><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th class="r">Amount</th><th></th></tr></thead><tbody id="t-body"></tbody></table></div></div></section>
+
+<section id="p-analysis" class="page" hidden><h2>Insights</h2>
+<div class="grid2"><div class="card"><h3>Your spending split</h3><div class="chartbox"><canvas id="chart"></canvas></div><p id="an-empty" class="muted" hidden>Nothing to show yet. Add an expense to see your chart.</p></div>
+<div class="card"><h3>Biggest spend</h3><div id="an-top"></div><h3>Category totals</h3><div id="an-list"></div></div></div>
+<div class="cards6" id="an-cards"></div></section>
+
+<section id="p-profile" class="page" hidden><h2>Profile & settings</h2>
+<div class="card prof"><div class="avatar xl" id="pf-av"></div><div><h3 id="pf-name"></h3><p class="muted" id="pf-email"></p><p class="muted" id="pf-since"></p></div></div>
+<div class="stats" id="pf-stats"></div>
+<div class="grid2"><div class="card"><h3>Your details</h3><label>Name<input id="pf-n"></label><label>Monthly budget (₹)<input id="pf-b" type="number" min="0" step="100" placeholder="e.g. 5000"></label><p class="note">Set a budget to see how much of it you have used on the Home page. Use 0 to turn it off.</p><p id="pf-err" class="error"></p><button class="btn" id="pf-save">Save changes</button></div>
+<div class="card"><h3>Change password</h3><label>Current password<input id="pw-c" type="password" autocomplete="current-password"></label><label>New password<input id="pw-n" type="password" autocomplete="new-password"></label><p id="pw-err" class="error"></p><button class="btn" id="pw-save">Update password</button></div></div>
+<div class="card"><h3>Your data</h3><div class="row"><span>Download all your expenses as a spreadsheet file</span><button class="ghost" id="export">Download CSV</button></div><div class="row"><span>Log out of this device</span><button class="ghost" id="logout">Log out</button></div><div class="row"><span>Permanently delete your account and expenses</span><button class="ghost danger" id="del-acc">Delete account</button></div></div>
+<p class="muted center"><button class="link" data-go="info">About this project and the model</button></p></section>
+
+<section id="p-help" class="page" hidden><h2>Help</h2><div class="card prose">
+<details open><summary>How do I add an expense?</summary><p>Open Add expense, write what you spent on, enter the amount and press Find category. Check the category and press Save expense.</p></details>
+<details><summary>What if the category is wrong?</summary><p>Pick the right one from the dropdown before saving. You can also edit any expense later from Transactions.</p></details>
+<details><summary>Which categories are there?</summary><p>Food, Travel, Shopping, Education, Entertainment and Bills &amp; Utilities.</p></details>
+<details><summary>Can I add several items at once?</summary><p>Add them one at a time, each with its own amount. That keeps your totals correct.</p></details>
+<details><summary>How does the budget work?</summary><p>Set a monthly budget in Profile. Home shows how much you have used this month.</p></details>
+<details><summary>Is my data private?</summary><p>Yes. Each account sees only its own expenses, and everything is stored on the computer running SpendWise.</p></details></div></section>
+
+<section id="p-info" class="page" hidden><h2>About this project</h2><p class="muted"><button class="link" data-go="profile">← Back to profile</button></p>
+<div class="grid2"><div class="card" id="m-info"></div><div class="card" id="m-metrics"></div></div>
+<div class="card prose"><h3>Introduction</h3><p>SpendWise reads a short expense description, predicts one of six categories with a trained machine-learning model, and lets you confirm or fix it before saving.</p>
+<h3>Problem and objectives</h3><p>Tracking expenses by hand takes effort and the same purchase is described in many ways. SpendWise classifies expense text, gives a simple website to manage expenses, and shows spending summaries.</p>
+<h3>Technology and method</h3><p>Python, Flask, SQLite, scikit-learn, Pandas, Joblib, HTML, CSS, JavaScript, Chart.js. Labelled CSV → TF-IDF (fit on training data only) → Multinomial Naive Bayes → evaluation on held-out data → saved model loaded by Flask.</p>
+<h3>Limitations</h3><p>The dataset is synthetic and limited, so unusual wording can be mis-classified. Only six categories and INR amounts. No bank or payment connection.</p></div></section>
+</main></div>
+
+<dialog id="dlg"><form method="dialog" id="e-form"><h3>Edit transaction</h3>
+<label>Description<input id="e-desc" maxlength="200" required></label><label>Amount (₹)<input id="e-amt" type="number" step="0.01" min="0.01" required></label>
+<label>Category<select id="e-cat"></select></label><label>Date<input id="e-date" type="date" required></label>
+<p id="e-err" class="error"></p><div class="row"><button type="button" class="ghost" id="e-cancel">Cancel</button><button class="btn" type="submit">Save changes</button></div></form></dialog>
+<div id="toast" role="status"></div>
+<script src="/static/js/chart.umd.js"></script><script src="/static/js/app.js"></script>
+</body></html>
